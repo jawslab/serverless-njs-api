@@ -1,0 +1,28 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: jawslab
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: serverless-njs-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}  # Default to 'dev' stage if not specified
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL, "fallback value"}
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+custom:
+  dotenv:
+    # Automatically load .env files for each stage
+    path: .env.${self:provider.stage}
+    exclude:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+functions:
+  api:
+    handler: src/index.handler
+    events:
+      - httpApi: "*"
