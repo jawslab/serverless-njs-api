@@ -4,6 +4,7 @@ const app = express();
 
 const {getDbClient} = require('./db/clients');
 const crud = require('./db/crud');
+const validators = require('./db/validators');
 
 
 app.get("/", async (req, res, next) => {
@@ -37,14 +38,27 @@ app.get("/leads", async (req, res, next) => {
 
 app.post("/leads", async (req, res, next) => {
   // post -> create data
-  const postdata = await req.body;
-  console.log('post data is',postdata,typeof(postdata));
-  const jsonString = postdata.toString(); // Convert Buffer to string
+  const postData = await req.body;
+  console.log('post data is',postData,typeof(postData));
+  const jsonString = postData.toString(); // Convert Buffer to string
   const parsedData = JSON.parse(jsonString); // Parse JSON string to object
   // Destructure the email from the parsed data
   const { email } = parsedData;
-  console.log('parsedata is',parsedData, typeof(parsedData));
-  console.log('post data email is',email,typeof(email));
+  console.log('jsonString is',jsonString, typeof(jsonString)); 
+  console.log('parsedData is',parsedData, typeof(parsedData));
+  console.log('postData email is',email,typeof(email));
+
+  // validation???
+  const {vData, hasError, message} = await validators.validateLead(parsedData)  //in JSON format - type: Object
+  if (hasError === true) {
+    return res.status(400).json({
+      message: message ? message : "Invalid request. please try again",
+    });
+  } else if (hasError === undefined) {
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
   const result = await crud.newLead(email);
   return res.status(201).json({
     results: result,
