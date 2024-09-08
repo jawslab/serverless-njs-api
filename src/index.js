@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 
 const {getDbClient} = require('./db/clients');
+const crud = require('./db/crud');
+
 
 app.get("/", async (req, res, next) => {
   console.log(process.env.DEBUG);
@@ -23,6 +25,29 @@ app.get("/", async (req, res, next) => {
     results: results,
     now: now,
     delta: delta,
+  });
+});
+
+app.get("/leads", async (req, res, next) => {
+  const results = await crud.listLeads()
+  return res.status(200).json({
+    results: results,
+  });
+});
+
+app.post("/leads", async (req, res, next) => {
+  // post -> create data
+  const postdata = await req.body;
+  console.log('post data is',postdata,typeof(postdata));
+  const jsonString = postdata.toString(); // Convert Buffer to string
+  const parsedData = JSON.parse(jsonString); // Parse JSON string to object
+  // Destructure the email from the parsed data
+  const { email } = parsedData;
+  console.log('parsedata is',parsedData, typeof(parsedData));
+  console.log('post data email is',email,typeof(email));
+  const result = await crud.newLead(email);
+  return res.status(201).json({
+    results: result,
   });
 });
 

@@ -1,7 +1,7 @@
 // const { serial } = require("drizzle-orm/mysql-core");
 // const { text, timestamp, pgTable } = require("drizzle-orm/pg-core");
-import { pgTable, serial, text, varchar, integer, timestamp, boolean } from 'drizzle-orm/pg-core'; 
-import { relations } from 'drizzle-orm'; 
+const { pgTable, serial, text, varchar, integer, timestamp, boolean } = require('drizzle-orm/pg-core'); 
+const { relations } = require('drizzle-orm') ; 
 
 const LeadTable = pgTable('leads', {
   id: serial('id').primaryKey().notNull(),
