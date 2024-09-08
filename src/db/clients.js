@@ -7,14 +7,13 @@ const {drizzle} = require('drizzle-orm/neon-http');
 const AWS_REGION = 'ca-central-1'
 const STAGE = process.env.STAGE || 'prod'
 const ssm = new AWS.SSM({ region: AWS_REGION });
-const DATABASE_URL_SSM_PARM = `/serverless-njs-api/${STAGE}/databaseurl`
-
 
 
 async function getDbClient() {
     const dburl = await secrets.getDatabaseUrl();
     neonConfig.fetchConnectionCache = true;
     const sql = neon(dburl);
+    console.log('STAGE is:', STAGE);
     return sql;
   }
 

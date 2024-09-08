@@ -9,9 +9,10 @@ provider:
   stage: ${opt:stage, 'dev'}  # Default to 'dev' stage if not specified
   environment:
     DATABASE_URL: ${env:DATABASE_URL, "fallback value"}
+    STAGE: ${env:STAGE, "prod"}
   iam:
     role:
-      name: serverless-api-lambda-ssm-role # Name of IAM role to use with this Lambda function
+      name: serverless-api-lambda-ssm-role-${env:STAGE, "prod"} # Name of IAM role to use with this Lambda function
       statements:
         - Effect: Allow
           Action:
